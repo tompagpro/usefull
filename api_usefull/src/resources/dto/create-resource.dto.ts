@@ -5,7 +5,7 @@ import {
   IsNotEmpty,
   IsUrl,
 } from 'class-validator';
-import { Category } from 'src/categories/category.entity';
+// import { Category } from 'src/categories/category.entity';
 
 export class CreateResourceDto {
   @IsNotEmpty()
@@ -13,7 +13,7 @@ export class CreateResourceDto {
   url: string;
 
   @IsNotEmpty()
-  category: Category;
+  category: string;
 
   @IsNotEmpty()
   title: string;

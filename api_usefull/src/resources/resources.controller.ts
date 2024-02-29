@@ -22,7 +22,6 @@ export class ResourcesController {
 
   @Get()
   getAllResources(@GetUser() user: User) {
-    console.log(user.username);
     return this.resourcesService.getAllResources(user);
   }
 
@@ -40,7 +39,6 @@ export class ResourcesController {
     @Body() createResourceDto: CreateResourceDto,
     @GetUser() user: User,
   ): Promise<Resource> {
-    console.log(user.username);
     return this.resourcesService.createResource(createResourceDto, user);
   }
 

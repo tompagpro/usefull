@@ -30,7 +30,7 @@ export class ResourcesService {
   async getAllResources(user: User): Promise<Resource[]> {
     return await this.resourceRepository.find({
       where: { user },
-      relations: { tags: true },
+      relations: { tags: true, category: true },
     });
   }
 
@@ -48,7 +48,7 @@ export class ResourcesService {
     const tagsEntities = await this.findOrCreateTags(tags, user);
     try {
       const categoryEntity = await this.categoryRepository.findOneOrFail({
-        where: { user, name: category.name },
+        where: { user, name: category },
       });
       const resource: Resource = this.resourceRepository.create({
         user,
