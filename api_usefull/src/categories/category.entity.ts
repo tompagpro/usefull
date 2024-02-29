@@ -1,0 +1,28 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  Unique,
+} from 'typeorm';
+import { Resource } from '../resources/resource.entity';
+import { User } from 'src/auth/user.entity';
+import { Exclude } from 'class-transformer';
+
+@Entity()
+@Unique(['name', 'user'])
+export class Category {
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
+
+  @Column()
+  name: string;
+
+  @OneToMany(() => Resource, (resource) => resource.category)
+  resources: Resource[];
+
+  @ManyToOne(() => User, (user) => user.categories)
+  @Exclude({ toPlainOnly: true })
+  user: User;
+}
