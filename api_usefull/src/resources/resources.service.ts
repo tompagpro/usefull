@@ -82,6 +82,7 @@ export class ResourcesService {
     for (const tagName of tagNames) {
       let tag: Tag = await this.tagRepository.findOneBy({
         name: tagName,
+        user,
       });
 
       if (!tag) {
