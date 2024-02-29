@@ -14,6 +14,7 @@ import { CreateResourceDto } from './dto/create-resource.dto';
 import { ScrapingService } from 'src/handler/scraping.service';
 import { ScrapeResourceTitleDto } from './dto/scrape-resource-title.dto';
 import { User } from 'src/auth/user.entity';
+import { UpdateResourceDto } from './dto/update-resource.dto';
 
 @Injectable()
 export class ResourcesService {
@@ -32,6 +33,14 @@ export class ResourcesService {
       where: { user },
       relations: { tags: true, category: true },
     });
+  }
+
+  async getResourceById(id: string, user: User): Promise<Resource> {
+    const task = await this.resourceRepository.findOneBy({ user, id });
+    if (!task) {
+      throw new NotFoundException();
+    }
+    return task;
   }
 
   // async getRessourcesByCategory(categoryId: number): Promise<Resource[]> {
@@ -73,6 +82,45 @@ export class ResourcesService {
       }
     }
   }
+  // TODO: a tester !
+  async updateResource(
+    updateResourceDto: UpdateResourceDto,
+    id: string,
+    user: User,
+  ): Promise<Resource> {
+    const { tags, category, title, alreadyRead } = updateResourceDto;
+    const resource = await this.getResourceById(id, user);
+    const tagsEntities = await this.findOrCreateTags(tags, user);
+    resource.tags = tagsEntities;
+    resource.title = title;
+    resource.alreadyRead = alreadyRead === 'true' ? true : false;
+
+    try {
+      const categoryEntity = await this.categoryRepository.findOneOrFail({
+        where: { user, name: category },
+      });
+      resource.category = categoryEntity;
+      return await this.resourceRepository.save(resource);
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new NotFoundException(
+          `La catégorie ${category} n'a pas pu être trouvée.`,
+        );
+      } else {
+        throw new InternalServerErrorException(
+          'Oups, un problème est survenu !',
+        );
+      }
+    }
+  }
+
+  async deleteResource(id: string) {
+    const result = await this.resourceRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Cette ressource n'a pas pu être trouvée.`);
+    }
+  }
 
   private async findOrCreateTags(
     tagNames: Array<string>,
@@ -92,14 +140,6 @@ export class ResourcesService {
       tags.push(tag);
     }
     return tags;
-  }
-
-  async deleteResource(id: string) {
-    const result = await this.resourceRepository.delete(id);
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`Cette ressource n'a pas pu être trouvée.`);
-    }
   }
 
   async scrapeTitleFromUrl(

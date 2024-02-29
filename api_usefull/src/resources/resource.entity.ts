@@ -18,7 +18,7 @@ import { Exclude } from 'class-transformer';
 @Unique(['url', 'user'])
 export class Resource {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   url: string;

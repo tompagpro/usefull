@@ -15,7 +15,7 @@ import { Exclude } from 'class-transformer';
 @Unique(['name', 'user'])
 export class Tag {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   name: string;
