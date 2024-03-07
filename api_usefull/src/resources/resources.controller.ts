@@ -52,8 +52,8 @@ export class ResourcesController {
   }
 
   @Delete('/:id')
-  deleteResource(@Param() id: string): void {
-    this.resourcesService.deleteResource(id);
+  deleteResource(@Param() id: string, @GetUser() user: User): void {
+    this.resourcesService.deleteResource(id, user);
   }
 
   @Post('/:id')

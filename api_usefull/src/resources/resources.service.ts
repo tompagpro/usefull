@@ -114,8 +114,11 @@ export class ResourcesService {
     }
   }
 
-  async deleteResource(id: string) {
-    const result = await this.resourceRepository.delete(id);
+  async deleteResource(id: string, user: User) {
+    console.log(id);
+    console.log(user);
+    // TODO : fix bug, issue with id / uuid
+    const result = await this.resourceRepository.delete({ id, user });
 
     if (result.affected === 0) {
       throw new NotFoundException(`Cette ressource n'a pas pu être trouvée.`);
