@@ -43,11 +43,12 @@ export class ResourcesService {
     return task;
   }
 
-  // async getRessourcesByCategory(categoryId: number): Promise<Resource[]> {
-  //   return this.resourceRepository.find({
-  //     where: { category: { id: categoryId } },
-  //   });
-  // }
+  async getRessourcesByCategory(categoryId: string): Promise<Resource[]> {
+    return this.resourceRepository.find({
+      where: { category: { id: categoryId } },
+      relations: { tags: true },
+    });
+  }
 
   async createResource(
     createResourceDto: CreateResourceDto,

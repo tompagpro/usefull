@@ -26,14 +26,12 @@ export class ResourcesController {
     return this.resourcesService.getAllResources(user);
   }
 
-  // @Get('by-category/:categoryId')
-  // findAllByCategory(
-  //   @Param('categoryId') categoryId: string,
-  // ): Promise<Resource[]> {
-  //   return this.resourcesService.getRessourcesByCategory(
-  //     parseInt(categoryId, 10),
-  //   );
-  // }
+  @Get('/:categoryId')
+  findAllByCategory(
+    @Param('categoryId') categoryId: string,
+  ): Promise<Resource[]> {
+    return this.resourcesService.getRessourcesByCategory(categoryId);
+  }
 
   @Get('/:id')
   getResourceById(

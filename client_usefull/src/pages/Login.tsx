@@ -1,13 +1,17 @@
-import { Link } from "react-router-dom";
-import { StyledLogo } from "../components/StyledLogo";
-import { Typography } from "../components/Typography";
+import { Link, useLocation } from "react-router-dom";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginAPI } from "../services/AuthService";
+import { useAuth } from "../context/useAuth";
+import { AuthenticationHeader } from "../components/AuthenticationHeader";
+
+
+// Minimum 8 characters, at least one uppercase letter, one lowercase letter, one number and one special character
+const passwordValidation = new RegExp(
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
+);
 
 const schema = z.object({
-  // email: z.string().email({ message: "Email invalide"}),
   username: z
     .string()
     .min(4, {
@@ -18,50 +22,34 @@ const schema = z.object({
     }),
   password: z
     .string()
-    .min(8, { message: "Le mot de passe contient au moins 8 caractères" }),
+    .min(8, { message: "Le mot de passe contient au moins 8 caractères." })
+    .regex(passwordValidation, {
+      message: "Le mot de passe n'est pas correct.",
+    }),
 });
 
 type FormFields = z.infer<typeof schema>;
 
 export const Login = () => {
+  const { loginUser } = useAuth();
+  const location = useLocation();
+  const defaultUsername = location.state?.user || "";
+  console.log("state => ", location.state);
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<FormFields>({ resolver: zodResolver(schema) });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      const { username, password } = data;
-      const response = await loginAPI(username, password);
-      console.log(response);
-
-      // throw new Error();
-    } catch (error) {
-      console.error(error);
-      setError("root", {
-        message: "Les données de connexions sont incorrectes.",
-      });
-    }
+    const { username, password } = data;
+    loginUser(username, password);
   };
 
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col items-center">
-          <StyledLogo className="bg-primary mb-4">U</StyledLogo>
-          <Typography
-            variant="subtitle1"
-            fontWeight={700}
-            className="text-primary"
-          >
-            Usefull
-          </Typography>
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Connectez-vous à votre compte
-          </h2>
-        </div>
+        <AuthenticationHeader title="Connectez-vous à votre compte" />
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -78,6 +66,7 @@ export const Login = () => {
                   {...register("username")}
                   type="text"
                   // autoComplete="username"
+                  defaultValue={defaultUsername}
                   placeholder="johnd86"
                   className="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />

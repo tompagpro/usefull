@@ -21,7 +21,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp(signUpCredentialsDto: SignUpCredentialsDto): Promise<void> {
+  async signUp(
+    signUpCredentialsDto: SignUpCredentialsDto,
+  ): Promise<{ message: string }> {
     const { username, password, email } = signUpCredentialsDto;
 
     const salt = await bcrypt.genSalt();
@@ -34,6 +36,7 @@ export class AuthService {
     });
     try {
       await this.userRepository.save(user);
+      return { message: 'Inscription réussie, vous pouvez vous connecter.' };
     } catch (error) {
       // duplicate username
       if (error.code === '23505') {
@@ -50,13 +53,13 @@ export class AuthService {
 
   async signIn(
     signInCredentialsDto: SignInCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; username: string; email: string }> {
     const { username, password } = signInCredentialsDto;
     const user = await this.userRepository.findOneBy({ username });
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload: jwtPayload = { username };
       const accessToken: string = await this.jwtService.sign(payload);
-      return { accessToken };
+      return { accessToken, username, email: user.email };
     } else {
       throw new UnauthorizedException(
         'Merci de vérifier vos identifiants de connexion',

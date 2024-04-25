@@ -1,13 +1,15 @@
-import { SidebarUser } from './components/SidebarUser'
-import './styles/App.css'
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
+import "./styles/App.css";
 
 function App() {
-
   return (
     <>
-      <SidebarUser />
+      <RouterProvider router={router} />
+      <ToastContainer />
     </>
-  )
+  );
 }
-
-export default App
+export default App;

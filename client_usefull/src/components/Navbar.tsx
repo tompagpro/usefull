@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/useAuth";
 
 export const Navbar = () => {
+  const { logout } = useAuth();
   const [theme, setTheme] = useState("light");
   // update state on toggle
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +97,7 @@ export const Navbar = () => {
             <li>
               <a>Settings</a>
             </li>
-            <li>
+            <li id="logout" onClick={() => logout()}>
               <a>Logout</a>
             </li>
           </ul>
