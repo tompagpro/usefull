@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/useAuth";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   const { logout } = useAuth();
@@ -7,7 +8,7 @@ export const Navbar = () => {
   // update state on toggle
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setTheme("sunset");
+      setTheme("night");
     } else {
       setTheme("light");
     }
@@ -27,13 +28,30 @@ export const Navbar = () => {
         <a className="btn btn-ghost text-xl">Usefull</a>
       </div>
       <div className="flex-none gap-2">
-        <div className="form-control">
+        <div className="flex-none">
+          <ul className="menu menu-horizontal px-1">
+            <li>
+              <details>
+                <summary>Ajouter</summary>
+                <ul className="p-2 bg-base-100 rounded-t-none">
+                  <li>
+                    <Link to={'/usr/new/resource'}>Une ressource</Link>
+                  </li>
+                  <li>
+                    <Link to={'/usr/new/category'}>Une catégorie</Link>
+                  </li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </div>
+        {/* <div className="form-control">
           <input
             type="text"
             placeholder="Search"
             className="input input-bordered w-24 md:w-auto"
           />
-        </div>
+        </div> */}
 
         <label className="flex cursor-pointer gap-2">
           <svg

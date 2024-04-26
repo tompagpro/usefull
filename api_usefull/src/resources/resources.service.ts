@@ -47,6 +47,7 @@ export class ResourcesService {
     return this.resourceRepository.find({
       where: { category: { id: categoryId } },
       relations: { tags: true },
+      order: { alreadyRead: 'ASC' },
     });
   }
 

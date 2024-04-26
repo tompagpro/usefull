@@ -31,8 +31,8 @@ export const ConnectedUser = () => {
         }}
       >
         <Navbar />
-        <div style={{ padding: "16px 24px", color: "#44596e" }}>
-          <div style={{ paddingBottom: "16px" }}>
+        <div className="px-5 py-4">
+          <div className="pb-4">
             {broken && (
               <button
                 className="sb-button"

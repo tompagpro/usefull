@@ -12,6 +12,8 @@ import { Register } from "../pages/Register.tsx";
 import IconPicker from "../components/IconPicker.tsx";
 import { Resources } from "../pages/Resources.tsx";
 import { Welcome } from "../pages/Welcome.tsx";
+import { NewResourceForm } from "../pages/NewResourceForm.tsx";
+import { NewCategoryForm } from "../pages/NewCategoryForm.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -58,8 +60,16 @@ export const router = createBrowserRouter([
         element: <Welcome />
       },
       {
-        path: ":categoryId/ressources",
+        path: ":categoryId/resources",
         element: <Resources />
+      },
+      {
+        path: "new/resource",
+        element: <NewResourceForm />
+      },
+      {
+        path: "new/category",
+        element: <NewCategoryForm />
       }
     ]
   },
