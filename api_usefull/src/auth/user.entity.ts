@@ -1,6 +1,6 @@
-import { Category } from 'src/categories/category.entity';
-import { Resource } from 'src/resources/resource.entity';
-import { Tag } from 'src/tags/tag.entity';
+import { Category } from '../categories/category.entity';
+import { Resource } from '../resources/resource.entity';
+import { Tag } from '../tags/tag.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

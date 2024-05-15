@@ -1,9 +1,9 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Resource } from 'src/resources/resource.entity';
-import { Category } from 'src/categories/category.entity';
-import { Tag } from 'src/tags/tag.entity';
-import { User } from 'src/auth/user.entity';
+import { Resource } from '../resources/resource.entity';
+import { Category } from '../categories/category.entity';
+import { Tag } from '../tags/tag.entity';
+import { User } from '../auth/user.entity';
 
 export default (configService: ConfigService): TypeOrmModuleOptions => {
   const options: TypeOrmModuleOptions = {

@@ -7,7 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 import { Resource } from '../resources/resource.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()

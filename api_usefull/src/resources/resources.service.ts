@@ -11,9 +11,9 @@ import { Resource } from './resource.entity';
 import { Tag } from '../tags/tag.entity';
 import { Category } from '../categories/category.entity';
 import { CreateResourceDto } from './dto/create-resource.dto';
-import { ScrapingService } from 'src/handler/scraping.service';
+import { ScrapingService } from '../handler/scraping.service';
 import { ScrapeResourceTitleDto } from './dto/scrape-resource-title.dto';
-import { User } from 'src/auth/user.entity';
+import { User } from '../auth/user.entity';
 import { UpdateResourceDto } from './dto/update-resource.dto';
 
 @Injectable()

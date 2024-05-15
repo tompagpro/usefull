@@ -1,27 +1,24 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuth } from "../context/useAuth";
-import { useLocation } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { createCategoryApi } from "../services/CategoryService";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
-  username: z
+  name: z
     .string()
-    .min(4, {
-      message: "Le nom d'utilisateur doit faire au moins 4 caractères.",
+    .min(1, {
+      message: "Ce champ doit être renseigné.",
     })
-    .max(20, {
-      message: "Le nom d'utilisateur doit moins de 20 caractères.",
-    }),
 });
 
 type FormFields = z.infer<typeof schema>;
 
 export const NewCategoryForm = () => {
-  const { user } = useAuth();
-  const location = useLocation();
-  const defaultUsername = location.state?.user || "";
-  console.log("state => ", location.state);
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -29,7 +26,12 @@ export const NewCategoryForm = () => {
   } = useForm<FormFields>({ resolver: zodResolver(schema) });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    const {} = data;
+    const { name } = data;
+    const id = await createCategoryApi(token, name);
+    console.log(id)
+    if (id) {
+      navigate(`/usr/${id}/resources`);
+    }
   };
 
   return (
@@ -37,76 +39,26 @@ export const NewCategoryForm = () => {
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label
-            htmlFor="username"
+            htmlFor="name"
             className="block text-sm font-medium leading-6 text-gray-900"
           >
-            Adresse de la ressource (Url)
+            Nom de la catégorie
           </label>
           <div className="mt-2">
             <input
-              id="username"
-              {...register("username")}
+              id="name"
+              {...register("name")}
               type="text"
-              // autoComplete="username"
-              defaultValue={defaultUsername}
-              placeholder="johnd86"
+              placeholder="Cuisine"
               className="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
-            {errors.username && (
-              <div className="text-error">{errors.username.message}</div>
+            {errors.name && (
+              <div className="text-error">{errors.name.message}</div>
             )}
           </div>
         </div>
 
-        <div>
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Mot de passe
-            </label>
-          </div>
-          <div className="mt-2">
-            <input
-              id="password"
-              // {...register("e")}
-              type="password"
-              autoComplete="current-password"
-              placeholder="**********"
-              className="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-            {/* {errors.password && (
-              <div className="text-error">{errors.password.message}</div>
-            )} */}
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Mot de passe
-            </label>
-          </div>
-          <div className="mt-2">
-            <input
-              id="password"
-              // {...register("e")}
-              type="password"
-              autoComplete="current-password"
-              placeholder="**********"
-              className="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-
-            {/* {errors.password && (
-              <div className="text-error">{errors.password.message}</div>
-            )} */}
-          </div>
-        </div>
         {/* Honeypot ?*/}
-
         <div>
           <button
             type="submit"

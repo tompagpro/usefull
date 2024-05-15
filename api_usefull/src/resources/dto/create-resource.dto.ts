@@ -5,7 +5,7 @@ import {
   IsNotEmpty,
   IsUrl,
 } from 'class-validator';
-// import { Category } from 'src/categories/category.entity';
+// import { Category } from '../categories/category.entity';
 
 export class CreateResourceDto {
   @IsNotEmpty()

@@ -77,7 +77,7 @@ export const Resources = () => {
       </div> */}
 
       <div className="flex flex-col gap-2">
-        {resources ? (
+        {resources.length > 0 ? (
           resources.map((resource) => (
             <div
               className="collapse collapse-arrow bg-base-100 shadow-md"
@@ -97,13 +97,21 @@ export const Resources = () => {
                     // <p key={`Tag-${tag.name}-Resource-${resource.title}`}>
                     //   {tag.name}
                     // </p>
-                    <div key={`Tag-${tag.name}-Resource-${resource.title}`} className="badge badge-secondary badge-outline">{tag.name}</div>
+                    <div
+                      key={`Tag-${tag.name}-Resource-${resource.title}`}
+                      className="badge badge-secondary badge-outline"
+                    >
+                      {tag.name}
+                    </div>
                   ))}
               </div>
             </div>
           ))
         ) : (
-          <p>Il n'y a pas encore de ressource dans cette catégorie !</p>
+          <>
+            <h1>MINCE !</h1>
+            <p>Il n'y a pas encore de ressource dans cette catégorie !</p>
+          </>
         )}
       </div>
     </div>

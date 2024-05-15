@@ -12,8 +12,8 @@ import { CreateResourceDto } from './dto/create-resource.dto';
 import { Resource } from './resource.entity';
 import { ScrapeResourceTitleDto } from './dto/scrape-resource-title.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { GetUser } from '../auth/get-user.decorator';
+import { User } from '../auth/user.entity';
 import { UpdateResourceDto } from './dto/update-resource.dto';
 
 @Controller('resources')
