@@ -51,6 +51,18 @@ export class ResourcesService {
     });
   }
 
+  async getResourcesByTag(user: User, tagId: string): Promise<Resource[]> {
+    const resources = await this.resourceRepository
+      .createQueryBuilder('resource')
+      .leftJoinAndSelect('resource.tags', 'tag')
+      .leftJoinAndSelect('resource.user', 'user')
+      .where('user.id = :userId', { userId: user.id })
+      .andWhere('tag.id = :tagId', { tagId })
+      .orderBy('resource.alreadyRead', 'ASC')
+      .getMany();
+    return resources;
+  }
+
   async createResource(
     createResourceDto: CreateResourceDto,
     user: User,
@@ -84,6 +96,7 @@ export class ResourcesService {
       }
     }
   }
+
   // TODO: a tester !
   async updateResource(
     updateResourceDto: UpdateResourceDto,
@@ -116,12 +129,8 @@ export class ResourcesService {
     }
   }
 
-  async deleteResource(id: string, user: User) {
-    console.log(id);
-    console.log(user);
-    // TODO : fix bug, issue with id / uuid
+  async deleteResource(id: string, user: User): Promise<void> {
     const result = await this.resourceRepository.delete({ id, user });
-
     if (result.affected === 0) {
       throw new NotFoundException(`Cette ressource n'a pas pu être trouvée.`);
     }
@@ -149,7 +158,7 @@ export class ResourcesService {
 
   async scrapeTitleFromUrl(
     scrapeResourceTitleDto: ScrapeResourceTitleDto,
-  ): Promise<string | null> {
+  ): Promise<{ title: string } | null> {
     const title = await this.scrapingService.scrapeTitleFromUrl(
       scrapeResourceTitleDto.url,
     );

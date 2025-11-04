@@ -19,7 +19,10 @@ export class CategoriesService {
   ) {}
 
   async getAllCaterogies(user: User): Promise<Category[]> {
-    return this.categoryRepository.find({ where: { user } });
+    return this.categoryRepository.find({
+      where: { user },
+      order: { name: 'ASC' },
+    });
   }
 
   async getCategoriesWithToRead(user: User): Promise<CategoryWithToRead[]> {

@@ -9,7 +9,7 @@ import { UserProvider } from "../context/authContext.tsx";
 // import { Navbar } from "../components/Navbar.tsx";
 import { ConnectedUser } from "../pages/ConnectedUser.tsx";
 import { Register } from "../pages/Register.tsx";
-import IconPicker from "../components/IconPicker.tsx";
+// import IconPicker from "../components/IconPicker.tsx";
 import { Resources } from "../pages/Resources.tsx";
 import { Welcome } from "../pages/Welcome.tsx";
 import { NewResourceForm } from "../pages/NewResourceForm.tsx";
@@ -21,10 +21,10 @@ export const router = createBrowserRouter([
     element: <GuestHomepage />,
     errorElement: <NotFoundErrorPage />,
   },
-  {
-    path: "/icon",
-    element: <IconPicker open="true" onClose="onClose" onSelect="selezct"/>,
-  },
+  // {
+  //   path: "/icon",
+  //   element: <IconPicker open="true" onClose="onClose" onSelect="selezct"/>,
+  // },
   {
     path: "/login",
     element: (
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
         element: <Welcome />
       },
       {
-        path: ":categoryId/resources",
+        path: ":categoryName/resources",
         element: <Resources />
       },
       {

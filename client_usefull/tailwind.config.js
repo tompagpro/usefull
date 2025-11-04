@@ -6,7 +6,7 @@ export default {
     extend: {},
   },
   daisyui: {
-    themes: ["cmyk", "night"],
+    themes: ["fantasy", "night"],
   },
   plugins: [daisyui],
 };

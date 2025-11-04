@@ -19,6 +19,9 @@ export class Category {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  icon?: string;
+
   @OneToMany(() => Resource, (resource) => resource.category)
   resources: Resource[];
 

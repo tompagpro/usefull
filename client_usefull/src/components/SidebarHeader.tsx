@@ -3,6 +3,7 @@ import React from "react";
 import { Typography } from "./Typography";
 import { StyledLogo } from "./StyledLogo";
 import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
+import { Link } from "react-router-dom";
 interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   collapsed?: boolean;
@@ -33,13 +34,15 @@ export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     <StyledSidebarHeader {...rest}>
       <div className="flex items-center">
         <StyledLogo className="bg-primary">U</StyledLogo>
-        <Typography
-          variant="subtitle1"
-          fontWeight={700}
-          className="text-primary"
-        >
-          Usefull
-        </Typography>
+        <Link to={"/usr/welcome"}>
+          <Typography
+            variant="subtitle1"
+            fontWeight={700}
+            className="text-primary"
+          >
+            Usefull
+          </Typography>
+        </Link>
       </div>
       {!collapsed && (
         <ArrowCircleLeftOutlinedIcon

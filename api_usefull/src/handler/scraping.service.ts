@@ -4,13 +4,13 @@ import fetch from 'node-fetch';
 
 @Injectable()
 export class ScrapingService {
-  async scrapeTitleFromUrl(url: string): Promise<string | null> {
+  async scrapeTitleFromUrl(url: string): Promise<{ title: string } | null> {
     try {
       const response = await fetch(url);
       const html = await response.text();
       const { document } = new JSDOM(html).window;
       const firstH1 = document.querySelector('h1')?.textContent.trim() || null;
-      return firstH1;
+      return { title: firstH1 };
     } catch (error) {
       console.error('Error fetching URL:', error);
       return null;

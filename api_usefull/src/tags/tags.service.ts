@@ -4,6 +4,7 @@ import { Tag } from './tag.entity';
 import { Repository } from 'typeorm';
 import { CreateOneTagDto } from './dto/create-one-tag.dto';
 import { User } from '../auth/user.entity';
+// import { Resource } from 'src/resources/resource.entity';
 
 @Injectable()
 export class TagsService {

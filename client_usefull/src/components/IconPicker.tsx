@@ -1,52 +1,64 @@
-import React from "react";
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-} from "@mui/material";
-import * as Icons from "@mui/icons-material"; // Importer tous les icônes disponibles
+export default "test";
+// import React, { useState, Suspense, lazy } from "react";
+// import { iconsMeta } from "./iconsMeta";
 
-const IconPicker = ({ open, onClose, onSelect }) => {
-  // Récupérer tous les noms d'icônes à partir de Icons
-  const iconNames = Object.keys(Icons).filter((iconName) =>
-    iconName.includes("Outlined")
-  );
+// interface IconPickerProps {
+//   value: string;
+//   onChange: (iconName: string) => void;
+// }
 
-  return (
-    <main className="p-12">
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Choisir une icône</DialogTitle>
-        <DialogContent>
-          <List>
-            {iconNames.map((iconName) => {
-              const IconComponent = Icons[iconName]; // Récupérer le composant d'icône correspondant
-              return (
-                <ListItem
-                  button
-                  key={iconName}
-                  onClick={() => onSelect(iconName)}
-                >
-                  <ListItemIcon>
-                    <IconComponent />
-                  </ListItemIcon>
-                  <ListItemText primary={iconName} />
-                </ListItem>
-              );
-            })}
-          </List>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>Fermer</Button>
-        </DialogActions>
-      </Dialog>
-    </main>
-  );
-};
+// const IconPicker: React.FC<IconPickerProps> = ({ value, onChange }) => {
+//   const [search, setSearch] = useState("");
 
-export default IconPicker;
+//   const filteredIcons = iconsMeta.filter((name) =>
+//     name.toLowerCase().includes(search.toLowerCase())
+//   );
+
+//   const LazyIcon = (name: string) =>
+//     lazy(() => import(`@mui/icons-material/${name}`));
+
+//   return (
+//     <div>
+//       <label className="block text-sm font-medium text-gray-700 mb-2">
+//         Choisis une icône :
+//       </label>
+
+//       <input
+//         type="text"
+//         placeholder="Rechercher..."
+//         className="w-full px-3 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//         value={search}
+//         onChange={(e) => setSearch(e.target.value)}
+//       />
+
+//       <div className="grid grid-cols-6 gap-2 max-h-64 overflow-y-auto">
+//         {filteredIcons.slice(0, 60).map((name) => {
+//           const IconComponent = LazyIcon(name);
+
+//           return (
+//             <Suspense
+//               fallback={
+//                 <div className="h-10 w-10 animate-pulse bg-gray-200 rounded" />
+//               }
+//             >
+//               <button
+//                 key={name}
+//                 onClick={() => onChange(name)}
+//                 className={`p-2 border rounded flex items-center justify-center hover:bg-blue-100 transition ${
+//                   value === name
+//                     ? "border-blue-500 bg-blue-50"
+//                     : "border-gray-200"
+//                 }`}
+//                 title={name}
+//               >
+//                 <IconComponent fontSize="small" />
+//               </button>
+//             </Suspense>
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default IconPicker;

@@ -15,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { UpdateResourceDto } from './dto/update-resource.dto';
+// import { Tag } from 'src/tags/tag.entity';
 
 @Controller('resources')
 @UseGuards(AuthGuard('jwt'))
@@ -26,11 +27,20 @@ export class ResourcesController {
     return this.resourcesService.getAllResources(user);
   }
 
-  @Get('/:categoryId')
-  findAllByCategory(
+  // Get USER ???
+  @Get('/category/:categoryId')
+  getAllByCategory(
     @Param('categoryId') categoryId: string,
   ): Promise<Resource[]> {
     return this.resourcesService.getRessourcesByCategory(categoryId);
+  }
+
+  @Get('/tag/:tagId')
+  getAllByTag(
+    @GetUser() user: User,
+    @Param('tagId') tagId: string,
+  ): Promise<Resource[]> {
+    return this.resourcesService.getResourcesByTag(user, tagId);
   }
 
   @Get('/:id')
@@ -50,8 +60,12 @@ export class ResourcesController {
   }
 
   @Delete('/:id')
-  deleteResource(@Param() id: string, @GetUser() user: User): void {
-    this.resourcesService.deleteResource(id, user);
+  deleteResource(
+    @Param('id') id: string,
+    @GetUser() user: User,
+  ): Promise<void> {
+    console.log('bien ici delete');
+    return this.resourcesService.deleteResource(id, user);
   }
 
   @Post('/:id')
@@ -63,10 +77,10 @@ export class ResourcesController {
     return this.resourcesService.updateResource(updateResourceDto, id, user);
   }
 
-  @Post('scrape')
+  @Post('/scrape/getTitle')
   scrapeResource(
     @Body() scrapeResourceTitleDto: ScrapeResourceTitleDto,
-  ): Promise<string | null> {
+  ): Promise<{ title: string } | null> {
     return this.resourcesService.scrapeTitleFromUrl(scrapeResourceTitleDto);
   }
 }

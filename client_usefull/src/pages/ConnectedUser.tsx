@@ -38,7 +38,7 @@ export const ConnectedUser = () => {
                 className="sb-button"
                 onClick={() => setToggled(!toggled)}
               >
-                Toggle Prout
+                Toggle button
               </button>
             )}
 

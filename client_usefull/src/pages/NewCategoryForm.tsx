@@ -28,9 +28,8 @@ export const NewCategoryForm = () => {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     const { name } = data;
     const id = await createCategoryApi(token, name);
-    console.log(id)
     if (id) {
-      navigate(`/usr/${id}/resources`);
+      navigate(`/usr/${name}/resources`, { state: { categoryId : id } });
     }
   };
 
@@ -63,9 +62,10 @@ export const NewCategoryForm = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="flex w-full btn btn-outline btn-secondary"
+            // className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            {isSubmitting ? "Loading..." : "Enregistrer"}
+            {isSubmitting ? "Chargement..." : "Enregistrer"}
           </button>
         </div>
       </form>

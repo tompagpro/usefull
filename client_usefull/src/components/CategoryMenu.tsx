@@ -12,34 +12,34 @@ type CategoryMenuProps = {
   collapsed: boolean;
 };
 
-type Category = {
+type CategoryWithToRead = {
   id: string;
   name: string;
   toRead: number;
 };
 
 export const CategoryMenu: React.FC<CategoryMenuProps> = ({ collapsed }) => {
-  const { token, logout } = useAuth();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { token, logout, logoutTriggered } = useAuth();
+  const [categories, setCategories] = useState<CategoryWithToRead[]>([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       const data = await getCategoriesWithToReadApi(token);
-      if (data.statusCode === 401) {
+      if (data.statusCode === 401 && !logoutTriggered) {
         logout();
       }
       setCategories(data);
-      console.log("CATEGORIES", data);
+      // console.log("CATEGORIES", data);
     };
 
-    fetchCategories().catch(console.error);
-  }, [token, logout]);
+    fetchCategories();
+  }, [token, logout, logoutTriggered]);
   return (
     <>
       <div className="mb-2 px-6">
         <Typography
           variant="body2"
-          className={`text-center font-semibold tracking-wide ${
+          className={`text-secondary text-center font-semibold tracking-wide ${
             collapsed ? "opacity-0" : "opacity-70"
           }`}
         >
@@ -48,30 +48,34 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({ collapsed }) => {
       </div>
       <Menu className="text-sm font-normal leading-4">
         {categories &&
-          categories.map((item) => (
+          categories.map((category) => (
             <MenuItem
               icon={<StorageIcon className="text-primary" />}
-              key={`MenuItem-${item.name}`}
+              key={`MenuItem-${category.name}`}
               component={
                 !collapsed ? (
-                  <Link key={`Link-${item.name}`} to={`${item.id}/resources`} />
+                  <Link
+                    key={`Link-${category.name}`}
+                    to={`${category.name}/resources`}
+                    state={{ categoryId: category.id, categoryName: category.name }}
+                  />
                 ) : undefined
               }
               suffix={
-                item.toRead && item.toRead > 0 ? (
+                category.toRead && category.toRead > 0 ? (
                   <Badge
-                    key={`Badge-${item.name}`}
+                    key={`Badge-${category.name}`}
                     variant="danger"
                     shape="circle"
                   >
-                    {item.toRead}
+                    {category.toRead}
                   </Badge>
                 ) : (
                   ""
                 )
               }
             >
-              {item.name}
+              {category.name}
             </MenuItem>
           ))}
         <MenuItem

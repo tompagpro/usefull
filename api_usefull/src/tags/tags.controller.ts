@@ -13,6 +13,7 @@ import { CreateOneTagDto } from './dto/create-one-tag.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
+// import { Resource } from 'src/resources/resource.entity';
 
 @Controller('tags')
 @UseGuards(AuthGuard('jwt'))

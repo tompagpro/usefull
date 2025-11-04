@@ -2,7 +2,7 @@ import React from "react";
 import { Sidebar } from "react-pro-sidebar";
 import { SidebarHeader } from "./SidebarHeader";
 import { CategoryMenu } from "./CategoryMenu";
-import { TagsMenu } from "./TagsMenu";
+import { TagMenu } from "./TagsMenu";
 
 type SidebarUserProps = {
   collapsed: boolean;
@@ -29,7 +29,7 @@ export const SidebarUser: React.FC<SidebarUserProps> = ({
       onBackdropClick={() => setToggled(false)}
       onBreakPoint={setBroken}
       breakPoint="md"
-      className="!fixed overflow-y-scroll top-0 bottom-0 bg-base-100"
+      className={`${collapsed && "cursor-pointer"} !fixed overflow-y-scroll top-0 bottom-0 bg-base-100 border-r border-primary`}
       backgroundColor={"bg-base-100"}
       onClick={collapsed ? handleClickOnCollapsedSidebar : undefined}
     >
@@ -42,9 +42,7 @@ export const SidebarUser: React.FC<SidebarUserProps> = ({
 
         <div className="flex-1 mb-8">
           <CategoryMenu collapsed={collapsed} />
-
-          {/* TAGS PART */}
-          <TagsMenu collapsed={collapsed} />
+          <TagMenu collapsed={collapsed} />
         </div>
         {/* <SidebarFooter collapsed={collapsed} /> */}
       </div>

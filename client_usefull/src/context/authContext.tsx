@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 type UserContextType = {
   user: UserProfile | null;
   token: string | null;
+  logoutTriggered: boolean;
   registerUser: (email: string, username: string, password: string) => void;
   loginUser: (username: string, password: string) => void;
   logout: () => void;
@@ -29,6 +30,7 @@ export const UserProvider = ({ children }: Props) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [logoutTriggered, setLogoutTriggered] = useState<boolean>(false);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -91,16 +93,34 @@ export const UserProvider = ({ children }: Props) => {
   };
 
   const logout = () => {
+    if (logoutTriggered) {
+      return;
+    }
+    setLogoutTriggered(true);
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
     setToken("");
-    toast.success("Déconnexion réussie!", { position: "bottom-right" })
+    toast.success("Vous avez été déconnecté.", {
+      position: "bottom-right",
+      toastId: "logoutSuccessful",
+    });
     navigate("/");
+    setTimeout(() => {
+      setLogoutTriggered(false);
+    }, 2000);
   };
   return (
     <UserContext.Provider
-      value={{ loginUser, user, token, logout, isLoggedIn, registerUser }}
+      value={{
+        loginUser,
+        user,
+        token,
+        logoutTriggered,
+        logout,
+        isLoggedIn,
+        registerUser,
+      }}
     >
       {isReady ? children : null}
     </UserContext.Provider>

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/useAuth";
 import { Link } from "react-router-dom";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 export const Navbar = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [theme, setTheme] = useState("light");
   // update state on toggle
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,7 +17,7 @@ export const Navbar = () => {
   // set theme state in localstorage on mount & also update localstorage on state change
   useEffect(() => {
     localStorage.setItem("theme", theme);
-    // console.log(localStorage.getItem("prout"));
+    // console.log(localStorage.getItem("test"));
     const localTheme = localStorage.getItem("theme") || "light";
     // add custom data-theme attribute to html tag required to update theme using DaisyUI
     document.querySelector("html")?.setAttribute("data-theme", localTheme);
@@ -25,26 +26,21 @@ export const Navbar = () => {
   return (
     <div className="navbar bg-base-100 mt-4">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">Usefull</a>
+        {/* <a className="btn btn-ghost text-xl">Ajouter des ressources +</a> */}
+        {/* <Link
+          to={"/usr/welcome"}
+          className="ml-4 text-primary text-lg font-medium"
+        >
+          Accueil
+        </Link> */}
       </div>
       <div className="flex-none gap-2">
-        <div className="flex-none">
-          <ul className="menu menu-horizontal px-1">
-            <li>
-              <details>
-                <summary>Ajouter</summary>
-                <ul className="p-2 bg-base-100 rounded-t-none">
-                  <li>
-                    <Link to={'/usr/new/resource'}>Une ressource</Link>
-                  </li>
-                  <li>
-                    <Link to={'/usr/new/category'}>Une catégorie</Link>
-                  </li>
-                </ul>
-              </details>
-            </li>
-          </ul>
-        </div>
+        <Link
+          to={"/usr/new/resource"}
+          className="btn btn-outline btn-secondary"
+        >
+          <AddOutlinedIcon /> Ajouter une ressource
+        </Link>
         {/* <div className="form-control">
           <input
             type="text"
@@ -95,11 +91,12 @@ export const Navbar = () => {
             role="button"
             className="btn btn-ghost btn-circle avatar"
           >
-            <div className="w-10 rounded-full">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-              />
+            <div className="avatar placeholder">
+              <div className="bg-white text-primary border border-gray-900 rounded-full w-10">
+                <span className="text-xl">
+                  {user?.username[0].toUpperCase()}
+                </span>
+              </div>
             </div>
           </div>
           <ul
@@ -108,15 +105,15 @@ export const Navbar = () => {
           >
             <li>
               <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
+                Profil
+                {/* <span className="badge">New</span> */}
               </a>
             </li>
-            <li>
+            {/* <li>
               <a>Settings</a>
-            </li>
+            </li> */}
             <li id="logout" onClick={() => logout()}>
-              <a>Logout</a>
+              <a>Déconnexion</a>
             </li>
           </ul>
         </div>
