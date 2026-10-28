@@ -36,11 +36,11 @@ export class ResourcesService {
   }
 
   async getResourceById(id: string, user: User): Promise<Resource> {
-    const task = await this.resourceRepository.findOneBy({ user, id });
-    if (!task) {
+    const resource = await this.resourceRepository.findOneBy({ user, id });
+    if (!resource) {
       throw new NotFoundException();
     }
-    return task;
+    return resource;
   }
 
   async getRessourcesByCategory(categoryId: string): Promise<Resource[]> {

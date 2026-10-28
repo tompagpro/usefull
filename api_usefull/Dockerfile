@@ -1,53 +1,40 @@
-FROM node:18-alpine
+# --- ÉTAPE 1: Build (Installation et Compilation) ---
+FROM node:18-alpine AS builder
 
-# Crée un dossier de travail
+# Définir le répertoire de travail dans le conteneur
 WORKDIR /app
 
-# Copie les fichiers
+# Copier package.json et package-lock.json pour installer les dépendances
+# Cela permet à Docker de mettre en cache cette étape si les fichiers ne changent pas
 COPY package*.json ./
-RUN npm install
 
+# Installer les dépendances
+RUN npm ci
+
+# Copier le reste du code source
 COPY . .
 
-# Build le projet
+# Compiler l'application NestJS (le résultat est dans le dossier 'dist')
 RUN npm run build
 
-# Expose le port (à adapter)
+
+# --- ÉTAPE 2: Production (Image finale légère) ---
+FROM node:20-slim AS production
+
+# Définir le répertoire de travail dans le conteneur
+WORKDIR /app
+
+# Copier uniquement les dépendances de production depuis l'étape précédente
+COPY package*.json ./
+RUN npm install --only=production
+
+# Copier le code compilé depuis l'étape 'builder'
+# Seul le contenu du dossier 'dist' et node_modules de production est copié
+COPY --from=builder /app/dist ./dist
+
+# Exposer le port par défaut de NestJS (souvent 3000)
 EXPOSE 3000
 
-# Lancer l'app Nest
-CMD ["npm", "run", "start:prod"]
-
-
-# # BUILD
-
-# FROM node:18-alpine AS build
-
-# WORKDIR /usr/src/app
-
-# COPY package*.json ./
-
-# RUN npm install
-
-# COPY . .
-
-# RUN npm run build
-
-# # PRODUCTION
-
-# FROM node:18-alpine
-
-# WORKDIR /usr/src/app
-
-# ARG NODE_ENV=production
-# ENV NODE_ENV=${NODE_ENV}}
-
-# COPY --from=build /usr/src/app/dist ./dist
-
-# COPY package*.json ./
-
-# RUN npm install --only=production
-
-# EXPOSE 3000
-
-# CMD [ "node", "dist/main.js" ]
+# Commande à exécuter lorsque le conteneur démarre
+# Lance l'application compilée
+CMD ["node", "dist/main"]
