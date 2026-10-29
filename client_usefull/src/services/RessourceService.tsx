@@ -88,17 +88,14 @@ export const deleteResourceApi = async (
   resourceId: string
 ) => {
   try {
-    const res = await fetch(
-      `${api}/resources/376758ff-1561-4d44-9e4d-86d9cb3283a5`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          // "Access-Control-Allow-Origin": "http://localhost:5173",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch(`${api}/resources/${resourceId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        // "Access-Control-Allow-Origin": "http://localhost:5173",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     // TODO : handle error and success
     if (!res.ok) {
       const errorText = await res.text(); // ou res.json() selon le backend
