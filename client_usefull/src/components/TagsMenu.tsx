@@ -30,10 +30,10 @@ export const TagMenu: React.FC<TagMenuProps> = ({ collapsed }) => {
 
   return (
     <>
-      <div className="mb-2 px-6 mt-8">
+      <div className="mb-2 mt-6 px-5">
         <Typography
-          className={`text-secondary text-center font-semibold tracking-wide ${
-            collapsed ? "opacity-0" : "opacity-70"
+          className={`font-semibold text-base-content/70 transition-opacity ${
+            collapsed ? "opacity-0" : ""
           }`}
           variant="body2"
         >
@@ -42,26 +42,24 @@ export const TagMenu: React.FC<TagMenuProps> = ({ collapsed }) => {
       </div>
 
       {collapsed ? (
-        <Typography className="text-center text-primary font-semibold tracking-wide">
+        <Typography
+          variant="body2"
+          className="text-center font-semibold text-base-content/70"
+        >
           {tags.length}
           <br /> tag{tags.length > 1 && "s"}
         </Typography>
       ) : (
-        <div className="flex gap-1 overflow-hidden ml-2">
+        <div className="flex flex-wrap gap-1.5 px-5">
           {tags &&
             tags.map((tag) => (
               <Link
                 key={`Link-${tag.name}`}
                 to={`${tag.name}/resources`}
                 state={{ tagId: tag.id }}
+                className="rounded-md border border-base-300 px-2 py-0.5 text-xs text-base-content/80 transition-colors hover:border-primary hover:text-primary"
               >
-                <div
-                  key={`Tag-${tag.name}`}
-                  className="badge badge-outline badge-primary px-4 py-2"
-                >
-                  {tag.name}
-                  {/* //TODO: add link and css */}
-                </div>
+                #{tag.name}
               </Link>
             ))}
         </div>
