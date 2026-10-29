@@ -29,8 +29,10 @@ export const SidebarUser: React.FC<SidebarUserProps> = ({
       onBackdropClick={() => setToggled(false)}
       onBreakPoint={setBroken}
       breakPoint="md"
-      className={`${collapsed && "cursor-pointer"} !fixed overflow-y-scroll top-0 bottom-0 bg-base-100 border-r border-primary`}
-      backgroundColor={"bg-base-100"}
+      // `!` forces our border color over the lib's default (#efefef)
+      className={`${collapsed && "cursor-pointer"} !fixed overflow-y-scroll top-0 bottom-0 bg-base-100 !border-base-300`}
+      // CSS value expected here, not a Tailwind class: let bg-base-100 show through
+      backgroundColor="transparent"
       onClick={collapsed ? handleClickOnCollapsedSidebar : undefined}
     >
       <div className="flex flex-col">
