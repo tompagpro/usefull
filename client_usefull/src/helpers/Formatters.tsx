@@ -10,9 +10,10 @@ export const getDomain = (url: string) => {
   }
 };
 
-// "2026-10-28T10:00:00Z" -> "28 oct."
+// "2026-10-28T10:00:00Z" -> "28 oct. 26"
 export const formatShortDate = (date: Date | string) =>
   new Date(date).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "short",
+    year: "2-digit"
   });
