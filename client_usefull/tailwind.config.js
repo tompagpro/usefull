@@ -1,9 +1,15 @@
 import daisyui from "daisyui";
+import defaultTheme from "tailwindcss/defaultTheme";
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        // Inter first, then the system fonts as a fallback while it loads
+        sans: ['"Inter Variable"', ...defaultTheme.fontFamily.sans],
+      },
+    },
   },
   daisyui: {
     // All the app colors live here: change a value, the whole app follows.
