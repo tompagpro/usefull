@@ -75,10 +75,6 @@ export const NewResourceForm = () => {
     fetchCategories();
   }, [token, logout, logoutTriggered]);
 
-  // ------------------------
-  console.log("ERRORS =>", errors);
-  // ------------------------
-
   // ---- GET TITLE FROM URL INPUT -----
 
   const handleOnBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
