@@ -5,20 +5,20 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
 export const Navbar = () => {
   const { logout, user } = useAuth();
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("usefull");
   // update state on toggle
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setTheme("night");
+      setTheme("usefull-dark");
     } else {
-      setTheme("light");
+      setTheme("usefull");
     }
   };
   // set theme state in localstorage on mount & also update localstorage on state change
   useEffect(() => {
     localStorage.setItem("theme", theme);
     // console.log(localStorage.getItem("test"));
-    const localTheme = localStorage.getItem("theme") || "light";
+    const localTheme = localStorage.getItem("theme") || "usefull";
     // add custom data-theme attribute to html tag required to update theme using DaisyUI
     document.querySelector("html")?.setAttribute("data-theme", localTheme);
   }, [theme]);
@@ -66,7 +66,7 @@ export const Navbar = () => {
           </svg>
           <input
             type="checkbox"
-            value="synthwave"
+            value="usefull-dark"
             onChange={handleToggle}
             className="toggle theme-controller"
           />
