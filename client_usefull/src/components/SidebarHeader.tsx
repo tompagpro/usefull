@@ -2,10 +2,9 @@ import styled from "@emotion/styled";
 import React from "react";
 import { Typography } from "./Typography";
 import { StyledLogo } from "./StyledLogo";
-import ArrowCircleLeftOutlinedIcon from "@mui/icons-material/ArrowCircleLeftOutlined";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Link } from "react-router-dom";
 interface SidebarHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  children?: React.ReactNode;
   collapsed?: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -24,32 +23,35 @@ const StyledSidebarHeader = styled.div`
 `;
 
 export const SidebarHeader: React.FC<SidebarHeaderProps> = ({
-  // children,
+  collapsed,
+  setCollapsed,
+  // Only real HTML attributes (className…) are left in rest, safe to spread on the div
   ...rest
 }) => {
-  const { collapsed, setCollapsed } = rest;
   const handleClickOnExtendedSidebar = () => setCollapsed(true);
 
   return (
     <StyledSidebarHeader {...rest}>
-      <div className="flex items-center">
-        <StyledLogo className="bg-primary">U</StyledLogo>
+      <div className="flex items-center gap-2.5">
+        <StyledLogo className="bg-primary text-primary-content">U</StyledLogo>
         <Link to={"/usr/welcome"}>
           <Typography
-            variant="subtitle1"
+            variant="body1"
             fontWeight={700}
-            className="text-primary"
+            className="text-base-content"
           >
             Usefull
           </Typography>
         </Link>
       </div>
       {!collapsed && (
-        <ArrowCircleLeftOutlinedIcon
-          fontSize="large"
-          className="text-primary cursor-pointer"
+        <button
+          className="btn btn-ghost btn-sm btn-square text-base-content/70"
+          aria-label="Réduire le menu"
           onClick={handleClickOnExtendedSidebar}
-        />
+        >
+          <ChevronLeftIcon />
+        </button>
       )}
     </StyledSidebarHeader>
   );

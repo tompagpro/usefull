@@ -1,16 +1,19 @@
 import { useState } from "react";
 import { Navbar } from "../components/Navbar";
-// import { Resources } from "../components/Resources";
 import { SidebarUser } from "../components/SidebarUser";
 import { Outlet } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
 
 export const ConnectedUser = () => {
   const [broken, setBroken] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [toggled, setToggled] = useState(false);
 
+  // Full class names only: Tailwind can't detect classes built with `ml-${x}`
+  const mainMargin = broken ? "ml-0" : collapsed ? "ml-20" : "ml-[250px]";
+
   return (
-    <div className="flex">
+    <div className="flex min-h-screen">
       <SidebarUser
         broken={broken}
         setBroken={setBroken}
@@ -21,29 +24,21 @@ export const ConnectedUser = () => {
       />
 
       <main
-        // className={`w-full transition duration-300 ml-${
-        //   broken ? "0" : collapsed ? "20" : "64"
-        // }`}
-        style={{
-          marginLeft: broken ? "0px" : collapsed ? "80px" : "250px",
-          transition: "margin-left 0.3s",
-          width: "100%",
-        }}
+        className={`${mainMargin} w-full min-w-0 transition-[margin] duration-300`}
       >
         <Navbar />
-        <div className="px-5 py-4">
-          <div className="pb-4">
-            {broken && (
-              <button
-                className="sb-button"
-                onClick={() => setToggled(!toggled)}
-              >
-                Toggle button
-              </button>
-            )}
+        <div className="px-4 pb-8 md:px-12">
+          {broken && (
+            <button
+              className="btn btn-ghost btn-square mb-4"
+              aria-label="Ouvrir le menu"
+              onClick={() => setToggled(!toggled)}
+            >
+              <MenuIcon />
+            </button>
+          )}
 
-            <Outlet />
-          </div>
+          <Outlet />
         </div>
       </main>
     </div>

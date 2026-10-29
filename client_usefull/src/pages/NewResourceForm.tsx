@@ -11,6 +11,7 @@ import { getCategoriesApi } from "../services/CategoryService";
 import { selectObjectConverter } from "../helpers/SelectObjectConverter";
 import { SelectOptions } from "../types/selectOptions";
 import { useNavigate } from "react-router-dom";
+import { getSelectStyles } from "../helpers/SelectStyles";
 
 const schema = z.object({
   url: z.string().url({ message: "Veuillez entrer une URL valide." }),
@@ -74,10 +75,6 @@ export const NewResourceForm = () => {
     fetchCategories();
   }, [token, logout, logoutTriggered]);
 
-  // ------------------------
-  console.log("ERRORS =>", errors);
-  // ------------------------
-
   // ---- GET TITLE FROM URL INPUT -----
 
   const handleOnBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
@@ -115,16 +112,16 @@ export const NewResourceForm = () => {
   };
 
   return (
-    <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
-      <h1 className="mb-8 text-xl text-primary font-bold text-center">
+    <div className="mx-auto mt-4 max-w-lg">
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">
         Nouvelle ressource
       </h1>
-      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="space-y-5 rounded-box border border-base-300 bg-base-100 p-6 md:p-8"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div>
-          <label
-            htmlFor="category"
-            className="block text-sm font-medium leading-6 text-gray-900"
-          >
+          <label htmlFor="category" className="mb-1.5 block font-medium">
             Catégorie
           </label>
           <Controller
@@ -132,7 +129,8 @@ export const NewResourceForm = () => {
             control={control}
             render={({ field }) => (
               <Select
-                className="mt-2 text-sm font-medium leading-6 text-gray-900"
+                inputId="category"
+                styles={getSelectStyles<SelectOptions>()}
                 options={categories}
                 placeholder="Choisir..."
                 {...field}
@@ -141,32 +139,24 @@ export const NewResourceForm = () => {
           />
         </div>
         <div>
-          <label
-            htmlFor="url"
-            className="block text-sm font-medium leading-6 text-gray-900"
-          >
-            Adresse de la ressource (Url)
+          <label htmlFor="url" className="mb-1.5 block font-medium">
+            Adresse de la ressource (URL)
           </label>
-          <div className="mt-2">
-            <input
-              id="url"
-              {...register("url")}
-              type="url"
-              onBlur={handleOnBlur}
-              placeholder="https://www.tompaganel.fr/contact"
-              className="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-            {errors.url && (
-              <div className="text-error">{errors.url.message}</div>
-            )}
-          </div>
+          <input
+            id="url"
+            {...register("url")}
+            type="url"
+            onBlur={handleOnBlur}
+            placeholder="https://www.tompaganel.fr/contact"
+            className="input input-bordered w-full"
+          />
+          {errors.url && (
+            <p className="mt-1 text-sm text-error">{errors.url.message}</p>
+          )}
         </div>
 
         <div>
-          <label
-            htmlFor="tags"
-            className="block text-sm font-medium leading-6 text-gray-900"
-          >
+          <label htmlFor="tags" className="mb-1.5 block font-medium">
             Tags
           </label>
           <Controller
@@ -174,7 +164,8 @@ export const NewResourceForm = () => {
             control={control}
             render={({ field }) => (
               <CreatableSelect
-                className="mt-2 text-sm font-medium leading-6 text-gray-900"
+                inputId="tags"
+                styles={getSelectStyles<SelectOptions, true>()}
                 isMulti
                 options={tags}
                 placeholder="Choisir..."
@@ -185,51 +176,45 @@ export const NewResourceForm = () => {
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Titre
-            </label>
-          </div>
-          <div className="mt-2">
-            <input
-              id="title"
-              {...register("title")}
-              disabled={!watch("url")} // disable input when url empty
-              type="text"
-              placeholder="Eloquent Javascript, 3rd Edition"
-              className="block w-full rounded-md border-0 pl-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
+          <label htmlFor="title" className="mb-1.5 block font-medium">
+            Titre
+          </label>
+          <input
+            id="title"
+            {...register("title")}
+            disabled={!watch("url")} // disable input when url empty
+            type="text"
+            placeholder="Eloquent Javascript, 3rd Edition"
+            className="input input-bordered w-full"
+          />
+          {errors.title && (
+            <p className="mt-1 text-sm text-error">{errors.title.message}</p>
+          )}
         </div>
 
-        <div className="form-control">
-          <label className="label cursor-pointer">
-            <span className="label-text">Marquer comme lue ?</span>
-            <input
-              id="alreadyRead"
-              {...register("alreadyRead")}
-              type="checkbox"
-              className="checkbox checkbox-primary"
-            />
-          </label>
-        </div>
+        <label className="flex cursor-pointer items-center gap-3">
+          <input
+            id="alreadyRead"
+            {...register("alreadyRead")}
+            type="checkbox"
+            className="checkbox checkbox-primary"
+          />
+          <span>Déjà lue</span>
+        </label>
 
         {/* Honeypot ?*/}
 
-        <div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            {isSubmitting ? "Loading..." : "Ajouter"}
-          </button>
-        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn btn-primary w-full"
+        >
+          {isSubmitting ? "Chargement..." : "Ajouter"}
+        </button>
+        {errors.root && (
+          <p className="text-sm text-error">{errors.root.message}</p>
+        )}
       </form>
-      {errors.root && <div className="text-error">{errors.root.message}</div>}
     </div>
   );
 };
