@@ -36,16 +36,22 @@ export const Resources = () => {
   const [selectedResource, setSelectedResource] = useState<Resource | null>(
     null
   );
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const toReadCount = resources.filter((r) => !r.alreadyRead).length;
 
   const handleDelete = async (resourceId: string) => {
-    console.log("resource :", resourceId);
+    setIsDeleting(true);
     try {
       await deleteResourceApi(token, resourceId);
+      // Only reached if the API succeeded: remove it from the list, no refetch needed
+      setResources((prev) => prev.filter((r) => r.id !== resourceId));
+      handleModal(false);
       toast.success("La ressource a bien été supprimée");
     } catch (error) {
       handleError(error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -172,10 +178,12 @@ export const Resources = () => {
             </button>
             <button
               className="btn btn-error"
+              disabled={isDeleting}
               onClick={() =>
                 selectedResource && handleDelete(selectedResource.id)
               }
             >
+              {isDeleting && <span className="loading loading-spinner loading-sm" />}
               Supprimer
             </button>
           </div>
