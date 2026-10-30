@@ -29,12 +29,12 @@ export class ResourcesController {
     return this.resourcesService.getAllResources(user);
   }
 
-  // Get USER ???
   @Get('/category/:categoryId')
   getAllByCategory(
     @Param('categoryId') categoryId: string,
+    @GetUser() user: User,
   ): Promise<Resource[]> {
-    return this.resourcesService.getRessourcesByCategory(categoryId);
+    return this.resourcesService.getRessourcesByCategory(categoryId, user);
   }
 
   @Get('/tag/:tagId')
