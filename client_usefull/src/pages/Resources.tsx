@@ -11,7 +11,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { toast } from "react-toastify";
 import { handleError } from "../helpers/ErrorHandler";
 import { EmptyResource } from "../components/EmptyResource";
-import { formatShortDate, getDomain } from "../helpers/Formatters";
+import { formatShortDate, getDomain, isHttpUrl } from "../helpers/Formatters";
 
 type Resource = {
   id: string;
@@ -34,9 +34,11 @@ export const Resources = () => {
   const { state } = useLocation();
   const [resources, setResources] = useState<Resource[]>([]);
   const [selectedResource, setSelectedResource] = useState<Resource | null>(
-    null
+    null,
   );
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const titleClass = (resource: Resource): string => resource.alreadyRead ? "text-base-content/70" : "font-semibold";
 
   const toReadCount = resources.filter((r) => !r.alreadyRead).length;
 
@@ -57,7 +59,7 @@ export const Resources = () => {
 
   const handleModal = (action: boolean, resource: Resource | null = null) => {
     const modalElement = document.getElementById(
-      "delete-modal"
+      "delete-modal",
     ) as HTMLDialogElement | null;
     // Show modal when action param is true, close when false
     if (action) {
@@ -121,15 +123,26 @@ export const Resources = () => {
               </span>
 
               <div className="min-w-0 flex-1 basis-60">
-                <p
-                  className={`truncate text-base ${
-                    resource.alreadyRead
-                      ? "text-base-content/70"
-                      : "font-semibold"
-                  }`}
-                >
-                  {resource.title}
-                </p>
+                {isHttpUrl(resource.url) ? (
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`block truncate rounded text-base hover:text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${titleClass(resource)}`}
+                  >
+                    {resource.title}
+                    <span className="sr-only">
+                      {" "}
+                      (s'ouvre dans un nouvel onglet)
+                    </span>
+                  </a>
+                ) : (
+                  <p
+                    className={`truncate text-base ${titleClass(resource)}`}
+                  >
+                    {resource.title}
+                  </p>
+                )}
                 <p className="truncate text-base-content/70">
                   {getDomain(resource.url)} ·{" "}
                   {formatShortDate(resource.createdAt)}
@@ -169,11 +182,12 @@ export const Resources = () => {
           <h3 className="text-lg font-semibold">
             Êtes-vous sûr de vouloir supprimer cette ressource ?
           </h3>
-          <p className="py-4 text-base-content/70">
-            {selectedResource?.title}
-          </p>
+          <p className="py-4 text-base-content/70">{selectedResource?.title}</p>
           <div className="modal-action">
-            <button className="btn btn-ghost" onClick={() => handleModal(false)}>
+            <button
+              className="btn btn-ghost"
+              onClick={() => handleModal(false)}
+            >
               Annuler
             </button>
             <button
@@ -183,7 +197,9 @@ export const Resources = () => {
                 selectedResource && handleDelete(selectedResource.id)
               }
             >
-              {isDeleting && <span className="loading loading-spinner loading-sm" />}
+              {isDeleting && (
+                <span className="loading loading-spinner loading-sm" />
+              )}
               Supprimer
             </button>
           </div>

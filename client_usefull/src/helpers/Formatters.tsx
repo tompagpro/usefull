@@ -10,6 +10,15 @@ export const getDomain = (url: string) => {
   }
 };
 
+// Only http(s) links are safe to open: "javascript:…" or "data:…" URLs could run code
+export const isHttpUrl = (url: string) => {
+  try {
+    return ["http:", "https:"].includes(new URL(url).protocol);
+  } catch {
+    return false;
+  }
+};
+
 // "2026-10-28T10:00:00Z" -> "28 oct. 26"
 export const formatShortDate = (date: Date | string) =>
   new Date(date).toLocaleDateString("fr-FR", {
