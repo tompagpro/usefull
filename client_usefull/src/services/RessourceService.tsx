@@ -106,3 +106,22 @@ export const deleteResourceApi = async (
     throw error;
   }
 };
+
+export const updateReadStatusApi = async (
+  token: string | null,
+  resourceId: string,
+  alreadyRead: boolean
+) => {
+  const res = await fetch(`${api}/resources/${resourceId}/read`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ alreadyRead }),
+  });
+  if (!res.ok) {
+    throw new Error(`Erreur API: ${res.status}`);
+  }
+  return res.json();
+};
