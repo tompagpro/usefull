@@ -11,7 +11,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { toast } from "react-toastify";
 import { handleError } from "../helpers/ErrorHandler";
 import { EmptyResource } from "../components/EmptyResource";
-import { formatShortDate, getDomain } from "../helpers/Formatters";
+import { formatShortDate, getDomain, isHttpUrl } from "../helpers/Formatters";
 
 type Resource = {
   id: string;
@@ -121,15 +121,31 @@ export const Resources = () => {
               </span>
 
               <div className="min-w-0 flex-1 basis-60">
-                <p
-                  className={`truncate text-base ${
-                    resource.alreadyRead
-                      ? "text-base-content/70"
-                      : "font-semibold"
-                  }`}
-                >
-                  {resource.title}
-                </p>
+                {isHttpUrl(resource.url) ? (
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`block truncate rounded text-base hover:text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${
+                      resource.alreadyRead
+                        ? "text-base-content/70"
+                        : "font-semibold"
+                    }`}
+                  >
+                    {resource.title}
+                    <span className="sr-only"> (s'ouvre dans un nouvel onglet)</span>
+                  </a>
+                ) : (
+                  <p
+                    className={`truncate text-base ${
+                      resource.alreadyRead
+                        ? "text-base-content/70"
+                        : "font-semibold"
+                    }`}
+                  >
+                    {resource.title}
+                  </p>
+                )}
                 <p className="truncate text-base-content/70">
                   {getDomain(resource.url)} ·{" "}
                   {formatShortDate(resource.createdAt)}
