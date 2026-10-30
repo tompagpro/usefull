@@ -23,7 +23,11 @@ export const loginAPI = async (username: string, password: string) => {
   }
 };
 
-export const registerAPI = async (username: string, password: string, email: string) => {
+export const registerAPI = async (
+  username: string,
+  password: string,
+  email: string
+) => {
   try {
     const response = await fetch(`${api}/auth/signup`, {
       method: "POST",

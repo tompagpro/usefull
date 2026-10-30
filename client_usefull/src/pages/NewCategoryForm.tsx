@@ -6,11 +6,9 @@ import { createCategoryApi } from "../services/CategoryService";
 import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
-  name: z
-    .string()
-    .min(1, {
-      message: "Ce champ doit être renseigné.",
-    })
+  name: z.string().min(1, {
+    message: "Ce champ doit être renseigné.",
+  }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -29,7 +27,7 @@ export const NewCategoryForm = () => {
     const { name } = data;
     const id = await createCategoryApi(token, name);
     if (id) {
-      navigate(`/usr/${name}/resources`, { state: { categoryId : id } });
+      navigate(`/usr/${name}/resources`, { state: { categoryId: id } });
     }
   };
 

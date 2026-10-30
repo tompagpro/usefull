@@ -1,6 +1,6 @@
 type FieldType = {
-  id: string,
-  name: string,
+  id: string;
+  name: string;
 };
 
 export const selectObjectConverter = (field: FieldType[]) => {
@@ -8,4 +8,4 @@ export const selectObjectConverter = (field: FieldType[]) => {
     value: element.name,
     label: element.name,
   }));
-}
+};

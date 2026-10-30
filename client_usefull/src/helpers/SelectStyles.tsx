@@ -6,7 +6,7 @@ import { GroupBase, StylesConfig } from "react-select";
 export const getSelectStyles = <
   Option,
   IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
+  Group extends GroupBase<Option> = GroupBase<Option>,
 >(): StylesConfig<Option, IsMulti, Group> => ({
   control: (base, state) => ({
     ...base,
@@ -35,8 +35,8 @@ export const getSelectStyles = <
     backgroundColor: state.isSelected
       ? "oklch(var(--p))"
       : state.isFocused
-      ? "oklch(var(--p) / 0.1)"
-      : "transparent",
+        ? "oklch(var(--p) / 0.1)"
+        : "transparent",
     color: state.isSelected ? "oklch(var(--pc))" : "inherit",
   }),
   singleValue: (base) => ({ ...base, color: "oklch(var(--bc))" }),
