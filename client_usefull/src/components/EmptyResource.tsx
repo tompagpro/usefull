@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 
-
 export const EmptyResource = () => {
   return (
     <div className="flex flex-col items-center rounded-box border border-dashed border-base-300 bg-base-100 px-6 py-12 text-center">
@@ -34,4 +33,4 @@ export const EmptyResource = () => {
       </Link>
     </div>
   );
-}
+};

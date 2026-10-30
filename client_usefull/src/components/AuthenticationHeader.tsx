@@ -4,7 +4,9 @@ import { Typography } from "./Typography";
 export const AuthenticationHeader = ({ title }: { title: string }) => {
   return (
     <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-col items-center">
-      <StyledLogo className="bg-primary text-primary-content mb-4">U</StyledLogo>
+      <StyledLogo className="bg-primary text-primary-content mb-4">
+        U
+      </StyledLogo>
       <Typography variant="subtitle1" fontWeight={700} className="text-primary">
         Usefull
       </Typography>

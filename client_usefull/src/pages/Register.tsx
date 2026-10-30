@@ -20,12 +20,9 @@ const schema = z.object({
     .max(20, {
       message: "Le nom d'utilisateur doit moins de 20 caractères.",
     }),
-  email: z
-    .string()
-    .email("Il ne s'agit pas d'un email valide.")
-    .min(1, {
-      message: "Ce champ doit être renseigné.",
-    }),
+  email: z.string().email("Il ne s'agit pas d'un email valide.").min(1, {
+    message: "Ce champ doit être renseigné.",
+  }),
   password: z
     .string()
     .min(8, { message: "Le mot de passe contient au moins 8 caractères." })

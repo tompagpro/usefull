@@ -51,7 +51,7 @@ export const createCategoryApi = async (token: string | null, name: string) => {
     } else if (response.status === 409) {
       // TODO toast category already exist
     } else {
-      throw new Error('Une erreur inconnue est survenue !');
+      throw new Error("Une erreur inconnue est survenue !");
     }
   } catch (error) {
     console.log("catch create category");

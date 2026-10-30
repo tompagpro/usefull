@@ -34,11 +34,12 @@ export const Resources = () => {
   const { state } = useLocation();
   const [resources, setResources] = useState<Resource[]>([]);
   const [selectedResource, setSelectedResource] = useState<Resource | null>(
-    null,
+    null
   );
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const titleClass = (resource: Resource): string => resource.alreadyRead ? "text-base-content/70" : "font-semibold";
+  const titleClass = (resource: Resource): string =>
+    resource.alreadyRead ? "text-base-content/70" : "font-semibold";
 
   const toReadCount = resources.filter((r) => !r.alreadyRead).length;
 
@@ -59,7 +60,7 @@ export const Resources = () => {
 
   const handleModal = (action: boolean, resource: Resource | null = null) => {
     const modalElement = document.getElementById(
-      "delete-modal",
+      "delete-modal"
     ) as HTMLDialogElement | null;
     // Show modal when action param is true, close when false
     if (action) {
@@ -137,9 +138,7 @@ export const Resources = () => {
                     </span>
                   </a>
                 ) : (
-                  <p
-                    className={`truncate text-base ${titleClass(resource)}`}
-                  >
+                  <p className={`truncate text-base ${titleClass(resource)}`}>
                     {resource.title}
                   </p>
                 )}

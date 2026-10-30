@@ -57,20 +57,20 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "welcome",
-        element: <Welcome />
+        element: <Welcome />,
       },
       {
         path: ":categoryName/resources",
-        element: <Resources />
+        element: <Resources />,
       },
       {
         path: "new/resource",
-        element: <NewResourceForm />
+        element: <NewResourceForm />,
       },
       {
         path: "new/category",
-        element: <NewCategoryForm />
-      }
-    ]
+        element: <NewCategoryForm />,
+      },
+    ],
   },
 ]);
