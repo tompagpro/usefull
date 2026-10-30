@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { UpdateResourceDto } from './dto/update-resource.dto';
+import { UpdateResourceReadStatusDto } from './dto/update-resource-read-status.dto';
 // import { Tag } from 'src/tags/tag.entity';
 
 @Controller('resources')
@@ -75,6 +77,19 @@ export class ResourcesController {
     @GetUser() user: User,
   ): Promise<Resource> {
     return this.resourcesService.updateResource(updateResourceDto, id, user);
+  }
+
+  @Patch('/:id/read')
+  updateReadStatus(
+    @Param('id') id: string,
+    @Body() updateResourceReadStatusDto: UpdateResourceReadStatusDto,
+    @GetUser() user: User,
+  ): Promise<Resource> {
+    return this.resourcesService.updateReadStatus(
+      id,
+      updateResourceReadStatusDto.alreadyRead,
+      user,
+    );
   }
 
   @Post('/scrape/getTitle')

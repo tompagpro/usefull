@@ -129,6 +129,17 @@ export class ResourcesService {
     }
   }
 
+  async updateReadStatus(
+    id: string,
+    alreadyRead: boolean,
+    user: User,
+  ): Promise<Resource> {
+    // getResourceById filters by user: nobody can change someone else's resource
+    const resource = await this.getResourceById(id, user);
+    resource.alreadyRead = alreadyRead;
+    return await this.resourceRepository.save(resource);
+  }
+
   async deleteResource(id: string, user: User): Promise<void> {
     const result = await this.resourceRepository.delete({ id, user });
     if (result.affected === 0) {

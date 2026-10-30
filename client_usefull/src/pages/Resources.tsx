@@ -4,10 +4,13 @@ import {
   deleteResourceApi,
   getResourcesByCategoryApi,
   getResourcesByTagApi,
+  updateReadStatusApi,
 } from "../services/RessourceService";
 import { useAuth } from "../context/useAuth";
 import { Tag } from "../components/TagsMenu";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { toast } from "react-toastify";
 import { handleError } from "../helpers/ErrorHandler";
 import { EmptyResource } from "../components/EmptyResource";
@@ -55,6 +58,25 @@ export const Resources = () => {
       handleError(error);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleReadStatus = async (resourceId: string, alreadyRead: boolean) => {
+    try {
+      await updateReadStatusApi(token, resourceId, alreadyRead);
+      // map returns a new array: only the clicked resource gets a new object
+      setResources((prev) =>
+        prev.map((r) => (r.id === resourceId ? { ...r, alreadyRead } : r))
+      );
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  // Opening an unread resource marks it as read (left or middle click)
+  const handleOpen = (resource: Resource) => {
+    if (!resource.alreadyRead) {
+      handleReadStatus(resource.id, true);
     }
   };
 
@@ -129,6 +151,8 @@ export const Resources = () => {
                     href={resource.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => handleOpen(resource)}
+                    onAuxClick={() => handleOpen(resource)}
                     className={`block truncate rounded text-base hover:text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${titleClass(resource)}`}
                   >
                     {resource.title}
@@ -161,13 +185,42 @@ export const Resources = () => {
                 </div>
               )}
 
-              <button
-                className="btn btn-square btn-ghost text-base-content/70 hover:text-error"
-                aria-label={`Supprimer ${resource.title}`}
-                onClick={() => handleModal(true, resource)}
-              >
-                <DeleteOutlineIcon />
-              </button>
+              <div className="flex">
+                <button
+                  className={`btn btn-square btn-ghost hover:text-primary ${
+                    resource.alreadyRead
+                      ? "text-primary"
+                      : "text-base-content/70"
+                  }`}
+                  aria-label={
+                    resource.alreadyRead
+                      ? `Marquer comme non lue : ${resource.title}`
+                      : `Marquer comme lue : ${resource.title}`
+                  }
+                  title={
+                    resource.alreadyRead
+                      ? "Marquer comme non lue"
+                      : "Marquer comme lue"
+                  }
+                  onClick={() =>
+                    handleReadStatus(resource.id, !resource.alreadyRead)
+                  }
+                >
+                  {resource.alreadyRead ? (
+                    <CheckCircleIcon />
+                  ) : (
+                    <CheckCircleOutlineIcon />
+                  )}
+                </button>
+                <button
+                  className="btn btn-square btn-ghost text-base-content/70 hover:text-error"
+                  aria-label={`Supprimer ${resource.title}`}
+                  title="Supprimer"
+                  onClick={() => handleModal(true, resource)}
+                >
+                  <DeleteOutlineIcon />
+                </button>
+              </div>
             </li>
           ))}
         </ul>
