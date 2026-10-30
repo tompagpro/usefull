@@ -70,8 +70,9 @@ export class CategoriesService {
     }
   }
 
-  async deleteCategory(id: string): Promise<void> {
-    const result = await this.categoryRepository.delete(id);
+  async deleteCategory(id: string, user: User): Promise<void> {
+    // Only delete if the category belongs to the user, otherwise affected = 0 -> 404
+    const result = await this.categoryRepository.delete({ id, user });
 
     if (result.affected === 0) {
       throw new NotFoundException(`Cette catégorie n'a pas pu être trouvée.`);
