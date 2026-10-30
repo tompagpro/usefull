@@ -43,9 +43,13 @@ export class ResourcesService {
     return resource;
   }
 
-  async getRessourcesByCategory(categoryId: string): Promise<Resource[]> {
+  async getRessourcesByCategory(
+    categoryId: string,
+    user: User,
+  ): Promise<Resource[]> {
     return this.resourceRepository.find({
-      where: { category: { id: categoryId } },
+      // Filter by user too: knowing a category id must not give access to its resources
+      where: { category: { id: categoryId }, user },
       relations: { tags: true },
       order: { alreadyRead: 'ASC' },
     });
