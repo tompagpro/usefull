@@ -1,5 +1,6 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useAuth } from "../context/useAuth";
+import { useCategories } from "../context/useCategories";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createResourceApi, getTitleApi } from "../services/RessourceService";
@@ -36,6 +37,7 @@ export const NewResourceForm = () => {
   const [categories, setCategories] = useState<SelectOptions[]>([]);
   const { token, logoutTriggered, logout } = useAuth();
   const navigate = useNavigate();
+  const { refreshCategories } = useCategories();
   const {
     register,
     control,
@@ -105,6 +107,7 @@ export const NewResourceForm = () => {
       alreadyRead
     );
     if (resource.category) {
+      refreshCategories();
       navigate(`/usr/${resource.category.name}/resources`, {
         state: { categoryId: resource.category.id },
       });

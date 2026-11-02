@@ -7,6 +7,7 @@ import {
   updateReadStatusApi,
 } from "../services/RessourceService";
 import { useAuth } from "../context/useAuth";
+import { useCategories } from "../context/useCategories";
 import { Tag } from "../components/TagsMenu";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -34,6 +35,7 @@ type Category = {
 
 export const Resources = () => {
   const { token } = useAuth();
+  const { refreshCategories } = useCategories();
   const { state } = useLocation();
   const [resources, setResources] = useState<Resource[]>([]);
   const [selectedResource, setSelectedResource] = useState<Resource | null>(
@@ -53,6 +55,7 @@ export const Resources = () => {
       // Only reached if the API succeeded: remove it from the list, no refetch needed
       setResources((prev) => prev.filter((r) => r.id !== resourceId));
       handleModal(false);
+      refreshCategories();
       toast.success("La ressource a bien été supprimée");
     } catch (error) {
       handleError(error);
@@ -68,6 +71,7 @@ export const Resources = () => {
       setResources((prev) =>
         prev.map((r) => (r.id === resourceId ? { ...r, alreadyRead } : r))
       );
+      refreshCategories();
     } catch (error) {
       handleError(error);
     }
