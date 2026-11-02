@@ -1,20 +1,12 @@
 import { Menu, MenuItem, MenuItemStyles } from "react-pro-sidebar";
 import { Typography } from "./Typography";
-import { useEffect, useState } from "react";
-import { getCategoriesWithToReadApi } from "../services/CategoryService";
-import { useAuth } from "../context/useAuth";
+import { useCategories } from "../context/useCategories";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Link, useLocation } from "react-router-dom";
 
 type CategoryMenuProps = {
   collapsed: boolean;
-};
-
-type CategoryWithToRead = {
-  id: string;
-  name: string;
-  toRead: number;
 };
 
 // Colors read from the DaisyUI theme variables (--p = primary, --bc = base-content),
@@ -39,21 +31,8 @@ const getMenuItemStyles = (collapsed: boolean): MenuItemStyles => ({
 });
 
 export const CategoryMenu: React.FC<CategoryMenuProps> = ({ collapsed }) => {
-  const { token, logout, logoutTriggered } = useAuth();
   const { state } = useLocation();
-  const [categories, setCategories] = useState<CategoryWithToRead[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const data = await getCategoriesWithToReadApi(token);
-      if (data.statusCode === 401 && !logoutTriggered) {
-        logout();
-      }
-      setCategories(data);
-    };
-
-    fetchCategories();
-  }, [token, logout, logoutTriggered]);
+  const { categories } = useCategories();
   return (
     <>
       <div className="mb-1 px-5">

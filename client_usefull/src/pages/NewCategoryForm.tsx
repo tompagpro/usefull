@@ -1,5 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuth } from "../context/useAuth";
+import { useCategories } from "../context/useCategories";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCategoryApi } from "../services/CategoryService";
@@ -15,6 +16,7 @@ type FormFields = z.infer<typeof schema>;
 
 export const NewCategoryForm = () => {
   const { token } = useAuth();
+  const { refreshCategories } = useCategories();
   const navigate = useNavigate();
 
   const {
@@ -27,6 +29,7 @@ export const NewCategoryForm = () => {
     const { name } = data;
     const id = await createCategoryApi(token, name);
     if (id) {
+      refreshCategories();
       navigate(`/usr/${name}/resources`, { state: { categoryId: id } });
     }
   };
