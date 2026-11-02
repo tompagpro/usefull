@@ -8,7 +8,7 @@ import {
 } from "../services/RessourceService";
 import { useAuth } from "../context/useAuth";
 import { useCategories } from "../context/useCategories";
-import { Tag } from "../components/TagsMenu";
+import { Tag } from "../context/tagsContext";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";

@@ -1,32 +1,13 @@
 import { Typography } from "./Typography";
-import { useEffect, useState } from "react";
-import { useAuth } from "../context/useAuth";
-import { getTagsApi } from "../services/TagService";
+import { useTags } from "../context/useTags";
 import { Link } from "react-router-dom";
 
 type TagMenuProps = {
   collapsed: boolean;
 };
 
-export type Tag = {
-  id: string;
-  name: string;
-};
-
 export const TagMenu: React.FC<TagMenuProps> = ({ collapsed }) => {
-  const [tags, setTags] = useState<Tag[]>([]);
-  const { token, logout, logoutTriggered } = useAuth();
-
-  useEffect(() => {
-    const fetchTags = async () => {
-      const data = await getTagsApi(token);
-      if (data.statusCode === 401 && !logoutTriggered) {
-        logout();
-      }
-      setTags(data);
-    };
-    fetchTags();
-  }, [token, logout, logoutTriggered]);
+  const { tags } = useTags();
 
   return (
     <>
