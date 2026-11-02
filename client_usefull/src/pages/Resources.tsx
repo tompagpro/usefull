@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   deleteResourceApi,
   getResourcesByCategoryApi,
@@ -8,6 +8,7 @@ import {
 } from "../services/RessourceService";
 import { useAuth } from "../context/useAuth";
 import { useCategories } from "../context/useCategories";
+import { useTags } from "../context/useTags";
 import { Tag } from "../context/tagsContext";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -35,8 +36,10 @@ type Category = {
 
 export const Resources = () => {
   const { token } = useAuth();
-  const { refreshCategories } = useCategories();
-  const { state } = useLocation();
+  const { categories, refreshCategories } = useCategories();
+  const { tags } = useTags();
+  // The URL is the source of truth: the page also works from a bookmark or a reload
+  const { categoryId, tagId } = useParams();
   const [resources, setResources] = useState<Resource[]>([]);
   const [selectedResource, setSelectedResource] = useState<Resource | null>(
     null
@@ -47,8 +50,10 @@ export const Resources = () => {
     resource.alreadyRead ? "text-base-content/70" : "font-semibold";
 
   const toReadCount = resources.filter((r) => !r.alreadyRead).length;
-  // A category page gets categoryName, a tag page gets tagName (see the sidebar links)
-  const pageTitle = state.categoryName ?? `#${state.tagName}`;
+  // Names come from the shared lists (empty until they are loaded)
+  const categoryName = categories.find((c) => c.id === categoryId)?.name;
+  const tagName = tags.find((t) => t.id === tagId)?.name;
+  const pageTitle = categoryName ?? (tagName ? `#${tagName}` : "");
 
   const handleDelete = async (resourceId: string) => {
     setIsDeleting(true);
@@ -101,25 +106,18 @@ export const Resources = () => {
   };
 
   useEffect(() => {
-    const fetchResourcesByCategory = async (categoryId: string | undefined) => {
+    const fetchResources = async () => {
+      let data: unknown = [];
       if (categoryId) {
-        const data = await getResourcesByCategoryApi(token, categoryId);
-        setResources(data);
+        data = await getResourcesByCategoryApi(token, categoryId);
+      } else if (tagId) {
+        data = await getResourcesByTagApi(token, tagId);
       }
+      // On an API error data is not a list: show the empty state instead of crashing
+      setResources(Array.isArray(data) ? data : []);
     };
-    const fetchResourcesByTag = async (tagId: string | undefined) => {
-      if (tagId) {
-        console.log("TAGID ->", tagId);
-        const data = await getResourcesByTagApi(token, tagId);
-        setResources(data);
-      }
-    };
-    if (Object.keys(state).includes("categoryId")) {
-      fetchResourcesByCategory(state.categoryId);
-    } else if (Object.keys(state).includes("tagId")) {
-      fetchResourcesByTag(state.tagId);
-    }
-  }, [token, state]);
+    fetchResources();
+  }, [token, categoryId, tagId]);
 
   return (
     <div>

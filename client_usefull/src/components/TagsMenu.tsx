@@ -1,6 +1,6 @@
 import { Typography } from "./Typography";
 import { useTags } from "../context/useTags";
-import { Link } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 
 type TagMenuProps = {
   collapsed: boolean;
@@ -8,6 +8,7 @@ type TagMenuProps = {
 
 export const TagMenu: React.FC<TagMenuProps> = ({ collapsed }) => {
   const { tags } = useTags();
+  const match = useMatch("/usr/tags/:tagId");
 
   return (
     <>
@@ -36,9 +37,12 @@ export const TagMenu: React.FC<TagMenuProps> = ({ collapsed }) => {
             tags.map((tag) => (
               <Link
                 key={`Link-${tag.name}`}
-                to={`${tag.name}/resources`}
-                state={{ tagId: tag.id, tagName: tag.name }}
-                className="rounded-md border border-base-300 px-2 py-0.5 text-xs text-base-content/80 transition-colors hover:border-primary hover:text-primary"
+                to={`/usr/tags/${tag.id}`}
+                className={`rounded-md border px-2 py-0.5 text-xs transition-colors hover:border-primary hover:text-primary ${
+                  match?.params.tagId === tag.id
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-base-300 text-base-content/80"
+                }`}
               >
                 #{tag.name}
               </Link>

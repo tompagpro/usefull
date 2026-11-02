@@ -112,12 +112,7 @@ export const NewResourceForm = () => {
       refreshCategories();
       // The form can create new tags: show them in the sidebar
       refreshTags();
-      navigate(`/usr/${resource.category.name}/resources`, {
-        state: {
-          categoryId: resource.category.id,
-          categoryName: resource.category.name,
-        },
-      });
+      navigate(`/usr/categories/${resource.category.id}`);
     }
   };
 
