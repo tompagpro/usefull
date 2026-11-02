@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import {
   deleteResourceApi,
   getResourcesByCategoryApi,
@@ -34,6 +34,24 @@ type Category = {
   name: string;
 };
 
+type ReadFilter = "all" | "to-read" | "read";
+
+const READ_FILTERS: { value: ReadFilter; label: string }[] = [
+  { value: "all", label: "Toutes" },
+  { value: "to-read", label: "À lire" },
+  { value: "read", label: "Lues" },
+];
+
+// Type guard: if it returns true, TypeScript knows value is a ReadFilter
+const isReadFilter = (value: string | null): value is ReadFilter =>
+  READ_FILTERS.some((f) => f.value === value);
+
+const matchesFilter = (resource: Resource, filter: ReadFilter) => {
+  if (filter === "to-read") return !resource.alreadyRead;
+  if (filter === "read") return resource.alreadyRead;
+  return true;
+};
+
 export const Resources = () => {
   const { token } = useAuth();
   const { categories, refreshCategories } = useCategories();
@@ -50,6 +68,21 @@ export const Resources = () => {
     resource.alreadyRead ? "text-base-content/70" : "font-semibold";
 
   const toReadCount = resources.filter((r) => !r.alreadyRead).length;
+
+  // The filter lives in the URL (?filter=to-read): it survives a reload and can be bookmarked
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterParam = searchParams.get("filter");
+  const filter: ReadFilter = isReadFilter(filterParam) ? filterParam : "all";
+  const visibleResources = resources.filter((r) => matchesFilter(r, filter));
+  const countFor = (value: ReadFilter) =>
+    resources.filter((r) => matchesFilter(r, value)).length;
+
+  const handleFilter = (value: ReadFilter) => {
+    // "all" is the default: keep the URL clean. replace: no history entry per click
+    setSearchParams(value === "all" ? {} : { filter: value }, {
+      replace: true,
+    });
+  };
   // Names come from the shared lists (empty until they are loaded)
   const categoryName = categories.find((c) => c.id === categoryId)?.name;
   const tagName = tags.find((t) => t.id === tagId)?.name;
@@ -121,111 +154,149 @@ export const Resources = () => {
 
   return (
     <div>
-      <header className="mb-5 flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight">{pageTitle}</h1>
+      <header className="mb-5 flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold tracking-tight">{pageTitle}</h1>
+          {resources.length > 0 && (
+            <p className="text-base-content/70">
+              {resources.length} ressource{resources.length > 1 && "s"} ·{" "}
+              {toReadCount} à lire
+            </p>
+          )}
+        </div>
         {resources.length > 0 && (
-          <p className="text-base-content/70">
-            {resources.length} ressource{resources.length > 1 && "s"} ·{" "}
-            {toReadCount} à lire
-          </p>
+          <div
+            className="tabs tabs-boxed"
+            role="group"
+            aria-label="Filtrer les ressources"
+          >
+            {READ_FILTERS.map(({ value, label }) => (
+              <button
+                key={value}
+                className={`tab gap-1.5 ${filter === value ? "tab-active" : ""}`}
+                aria-pressed={filter === value}
+                onClick={() => handleFilter(value)}
+              >
+                {label}
+                <span className="text-xs opacity-70">{countFor(value)}</span>
+              </button>
+            ))}
+          </div>
         )}
       </header>
 
       {resources.length > 0 ? (
-        <ul className="divide-y divide-base-300 overflow-hidden rounded-box border border-base-300 bg-base-100">
-          {resources.map((resource) => (
-            <li
-              key={`Resource-${resource.id}`}
-              className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 md:px-5"
-            >
-              {/* Unread marker, fixed width so titles stay aligned */}
-              <span className="flex w-2 justify-center">
-                {!resource.alreadyRead && (
-                  <span className="h-2 w-2 rounded-full bg-primary">
-                    <span className="sr-only">À lire</span>
-                  </span>
-                )}
-              </span>
-
-              <div className="min-w-0 flex-1 basis-60">
-                {isHttpUrl(resource.url) ? (
-                  <a
-                    href={resource.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => handleOpen(resource)}
-                    onAuxClick={() => handleOpen(resource)}
-                    className={`block truncate rounded text-base hover:text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${titleClass(resource)}`}
-                  >
-                    {resource.title}
-                    <span className="sr-only">
-                      {" "}
-                      (s'ouvre dans un nouvel onglet)
+        visibleResources.length > 0 ? (
+          <ul className="divide-y divide-base-300 overflow-hidden rounded-box border border-base-300 bg-base-100">
+            {visibleResources.map((resource) => (
+              <li
+                key={`Resource-${resource.id}`}
+                className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 md:px-5"
+              >
+                {/* Unread marker, fixed width so titles stay aligned */}
+                <span className="flex w-2 justify-center">
+                  {!resource.alreadyRead && (
+                    <span className="h-2 w-2 rounded-full bg-primary">
+                      <span className="sr-only">À lire</span>
                     </span>
-                  </a>
-                ) : (
-                  <p className={`truncate text-base ${titleClass(resource)}`}>
-                    {resource.title}
-                  </p>
-                )}
-                <p className="truncate text-base-content/70">
-                  {getDomain(resource.url)} ·{" "}
-                  {formatShortDate(resource.createdAt)}
-                </p>
-              </div>
-
-              {resource.tags && resource.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {resource.tags.map((tag) => (
-                    <span
-                      key={`Tag-${tag.name}-Resource-${resource.id}`}
-                      className="rounded-md bg-primary/10 px-2 py-0.5 text-xs text-primary"
-                    >
-                      {tag.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              <div className="flex">
-                <button
-                  className={`btn btn-square btn-ghost hover:text-primary ${
-                    resource.alreadyRead
-                      ? "text-primary"
-                      : "text-base-content/70"
-                  }`}
-                  aria-label={
-                    resource.alreadyRead
-                      ? `Marquer comme non lue : ${resource.title}`
-                      : `Marquer comme lue : ${resource.title}`
-                  }
-                  title={
-                    resource.alreadyRead
-                      ? "Marquer comme non lue"
-                      : "Marquer comme lue"
-                  }
-                  onClick={() =>
-                    handleReadStatus(resource.id, !resource.alreadyRead)
-                  }
-                >
-                  {resource.alreadyRead ? (
-                    <CheckCircleIcon />
-                  ) : (
-                    <CheckCircleOutlineIcon />
                   )}
-                </button>
-                <button
-                  className="btn btn-square btn-ghost text-base-content/70 hover:text-error"
-                  aria-label={`Supprimer ${resource.title}`}
-                  title="Supprimer"
-                  onClick={() => handleModal(true, resource)}
-                >
-                  <DeleteOutlineIcon />
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+                </span>
+
+                <div className="min-w-0 flex-1 basis-60">
+                  {isHttpUrl(resource.url) ? (
+                    <a
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => handleOpen(resource)}
+                      onAuxClick={() => handleOpen(resource)}
+                      className={`block truncate rounded text-base hover:text-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${titleClass(resource)}`}
+                    >
+                      {resource.title}
+                      <span className="sr-only">
+                        {" "}
+                        (s'ouvre dans un nouvel onglet)
+                      </span>
+                    </a>
+                  ) : (
+                    <p className={`truncate text-base ${titleClass(resource)}`}>
+                      {resource.title}
+                    </p>
+                  )}
+                  <p className="truncate text-base-content/70">
+                    {getDomain(resource.url)} ·{" "}
+                    {formatShortDate(resource.createdAt)}
+                  </p>
+                </div>
+
+                {resource.tags && resource.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {resource.tags.map((tag) => (
+                      <span
+                        key={`Tag-${tag.name}-Resource-${resource.id}`}
+                        className="rounded-md bg-primary/10 px-2 py-0.5 text-xs text-primary"
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex">
+                  <button
+                    className={`btn btn-square btn-ghost hover:text-primary ${
+                      resource.alreadyRead
+                        ? "text-primary"
+                        : "text-base-content/70"
+                    }`}
+                    aria-label={
+                      resource.alreadyRead
+                        ? `Marquer comme non lue : ${resource.title}`
+                        : `Marquer comme lue : ${resource.title}`
+                    }
+                    title={
+                      resource.alreadyRead
+                        ? "Marquer comme non lue"
+                        : "Marquer comme lue"
+                    }
+                    onClick={() =>
+                      handleReadStatus(resource.id, !resource.alreadyRead)
+                    }
+                  >
+                    {resource.alreadyRead ? (
+                      <CheckCircleIcon />
+                    ) : (
+                      <CheckCircleOutlineIcon />
+                    )}
+                  </button>
+                  <button
+                    className="btn btn-square btn-ghost text-base-content/70 hover:text-error"
+                    aria-label={`Supprimer ${resource.title}`}
+                    title="Supprimer"
+                    onClick={() => handleModal(true, resource)}
+                  >
+                    <DeleteOutlineIcon />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          // The list is not empty, the filter is: say so and offer a way back
+          <div className="rounded-box border border-dashed border-base-300 bg-base-100 px-6 py-10 text-center">
+            <p className="text-base-content/70">
+              {filter === "to-read"
+                ? "Tout est lu ici, bravo !"
+                : "Aucune ressource lue pour l'instant."}
+            </p>
+            <button
+              className="btn btn-ghost btn-sm mt-3"
+              onClick={() => handleFilter("all")}
+            >
+              Voir toutes les ressources
+            </button>
+          </div>
+        )
       ) : (
         <EmptyResource />
       )}
