@@ -2,24 +2,25 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/useAuth";
 import { Link } from "react-router-dom";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import {
+  DARK_THEME,
+  LIGHT_THEME,
+  Theme,
+  applyTheme,
+  getInitialTheme,
+} from "../helpers/Theme";
 
 export const Navbar = () => {
   const { logout, user } = useAuth();
-  const [theme, setTheme] = useState("usefull");
+  // Lazy initializer: read the saved theme once, on the first render only
+  const [theme, setTheme] = useState<Theme>(getInitialTheme);
   // update state on toggle
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      setTheme("usefull-dark");
-    } else {
-      setTheme("usefull");
-    }
+    setTheme(e.target.checked ? DARK_THEME : LIGHT_THEME);
   };
-  // set theme state in localstorage on mount & also update localstorage on state change
+  // apply and save the theme each time it changes
   useEffect(() => {
-    localStorage.setItem("theme", theme);
-    const localTheme = localStorage.getItem("theme") || "usefull";
-    // add custom data-theme attribute to html tag required to update theme using DaisyUI
-    document.querySelector("html")?.setAttribute("data-theme", localTheme);
+    applyTheme(theme);
   }, [theme]);
 
   return (
@@ -48,7 +49,8 @@ export const Navbar = () => {
           </svg>
           <input
             type="checkbox"
-            value="usefull-dark"
+            value={DARK_THEME}
+            checked={theme === DARK_THEME}
             onChange={handleToggle}
             className="toggle toggle-sm theme-controller"
             aria-label="Mode sombre"
