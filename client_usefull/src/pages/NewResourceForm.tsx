@@ -109,7 +109,10 @@ export const NewResourceForm = () => {
     if (resource.category) {
       refreshCategories();
       navigate(`/usr/${resource.category.name}/resources`, {
-        state: { categoryId: resource.category.id },
+        state: {
+          categoryId: resource.category.id,
+          categoryName: resource.category.name,
+        },
       });
     }
   };

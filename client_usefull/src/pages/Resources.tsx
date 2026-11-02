@@ -47,6 +47,8 @@ export const Resources = () => {
     resource.alreadyRead ? "text-base-content/70" : "font-semibold";
 
   const toReadCount = resources.filter((r) => !r.alreadyRead).length;
+  // A category page gets categoryName, a tag page gets tagName (see the sidebar links)
+  const pageTitle = state.categoryName ?? `#${state.tagName}`;
 
   const handleDelete = async (resourceId: string) => {
     setIsDeleting(true);
@@ -122,9 +124,7 @@ export const Resources = () => {
   return (
     <div>
       <header className="mb-5 flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight">
-          {state.categoryName}
-        </h1>
+        <h1 className="text-2xl font-bold tracking-tight">{pageTitle}</h1>
         {resources.length > 0 && (
           <p className="text-base-content/70">
             {resources.length} ressource{resources.length > 1 && "s"} ·{" "}

@@ -56,7 +56,7 @@ export const TagMenu: React.FC<TagMenuProps> = ({ collapsed }) => {
               <Link
                 key={`Link-${tag.name}`}
                 to={`${tag.name}/resources`}
-                state={{ tagId: tag.id }}
+                state={{ tagId: tag.id, tagName: tag.name }}
                 className="rounded-md border border-base-300 px-2 py-0.5 text-xs text-base-content/80 transition-colors hover:border-primary hover:text-primary"
               >
                 #{tag.name}
