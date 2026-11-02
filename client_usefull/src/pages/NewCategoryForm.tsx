@@ -30,9 +30,7 @@ export const NewCategoryForm = () => {
     const id = await createCategoryApi(token, name);
     if (id) {
       refreshCategories();
-      navigate(`/usr/${name}/resources`, {
-        state: { categoryId: id, categoryName: name },
-      });
+      navigate(`/usr/categories/${id}`);
     }
   };
 

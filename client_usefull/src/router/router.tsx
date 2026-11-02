@@ -59,8 +59,13 @@ export const router = createBrowserRouter([
         path: "welcome",
         element: <Welcome />,
       },
+      // Same page for both: Resources reads categoryId or tagId from the URL
       {
-        path: ":categoryName/resources",
+        path: "categories/:categoryId",
+        element: <Resources />,
+      },
+      {
+        path: "tags/:tagId",
         element: <Resources />,
       },
       {

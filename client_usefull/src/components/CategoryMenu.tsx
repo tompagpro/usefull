@@ -3,7 +3,7 @@ import { Typography } from "./Typography";
 import { useCategories } from "../context/useCategories";
 import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 
 type CategoryMenuProps = {
   collapsed: boolean;
@@ -31,7 +31,8 @@ const getMenuItemStyles = (collapsed: boolean): MenuItemStyles => ({
 });
 
 export const CategoryMenu: React.FC<CategoryMenuProps> = ({ collapsed }) => {
-  const { state } = useLocation();
+  // The sidebar is outside the page route: useMatch reads the URL from anywhere
+  const match = useMatch("/usr/categories/:categoryId");
   const { categories } = useCategories();
   return (
     <>
@@ -48,7 +49,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({ collapsed }) => {
       <Menu className="text-sm" menuItemStyles={getMenuItemStyles(collapsed)}>
         {categories &&
           categories.map((category) => {
-            const active = state?.categoryId === category.id;
+            const active = match?.params.categoryId === category.id;
             return (
               <MenuItem
                 icon={<FolderOutlinedIcon fontSize="small" />}
@@ -58,11 +59,7 @@ export const CategoryMenu: React.FC<CategoryMenuProps> = ({ collapsed }) => {
                   !collapsed ? (
                     <Link
                       key={`Link-${category.name}`}
-                      to={`${category.name}/resources`}
-                      state={{
-                        categoryId: category.id,
-                        categoryName: category.name,
-                      }}
+                      to={`/usr/categories/${category.id}`}
                     />
                   ) : undefined
                 }
